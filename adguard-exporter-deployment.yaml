@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-exporter
+  namespace: adguard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: adguard-exporter
+  template:
+    metadata:
+      labels:
+        app: adguard-exporter
+    spec:
+      containers:
+      - name: adguard-exporter
+        image: ghcr.io/henrywhitaker3/adguard-exporter:latest
+        env:
+        - name: ADGUARD_SERVERS
+          value: adguard.adguard.svc.calfolguera.com
+        - name: ADGUARD_USERNAMES
+          value: admin
+        - name: ADGUARD_PASSWORDS
+          valueFrom:
+            secretKeyRef:
+              name: adguard-pass
+              key: password
+        ports:
+        - name: adguard-exp
+          containerPort: 9618
